@@ -42,6 +42,8 @@ jobs:
 
       - name: Install packages
         run: |
+        
+          Sys.setenv(DOWNLOAD_STATIC_LIBV8 = 1)
           if (isFALSE(requireNamespace("remotes", quietly = TRUE))) {
                     install.packages("remotes")
           }
