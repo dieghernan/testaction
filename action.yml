@@ -69,7 +69,7 @@ runs:
       - name: Validate cff
         run: | 
           # Validate cff
-          cat("::group::Validating\n")
+          cat("::group::Results\n")
           citfile <- yaml::read_yaml("${{ inputs.citation-path }}")
           # All elements to character
           citfile <- rapply(citfile, function(x) as.character(x), how = "replace")

@@ -28,7 +28,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2 
           
-      - name: Install R
+      - name: Validate CITATION.cff
         uses: dieghernan/testaction@main
         with:
           cache-version: 999
