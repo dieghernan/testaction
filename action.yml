@@ -37,7 +37,21 @@ runs:
         shell: Rscript {0}
 
 
-      - name: Install dependencies
+      - name: Install dependencies (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          # Install dependencies
+          cat("::group::Install/update packages\n")
+          cat("os-version=", sessionInfo()$running, "\n")
+          options(repos="https://packagemanager.rstudio.com/all/latest")
+          # Install/Update packages
+          Sys.setenv("PKGCACHE_HTTP_VERSION" = "2")
+          pak::pkg_install(c("cffr", "knitr", "sessioninfo"), upgrade = TRUE, dependencies = TRUE)
+          cat("::endgroup::\n")
+        shell: Rscript {0}
+        
+      - name: Install dependencies (Non-Ubuntu)
+        if: runner.os != 'Linux'
         run: |
           # Install dependencies
           cat("::group::Install/update packages\n")
