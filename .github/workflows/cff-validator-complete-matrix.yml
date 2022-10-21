@@ -44,27 +44,24 @@ jobs:
           path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-4-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-4-
-
-      - name: Install packages
+          
+      - name: Install pak
         run: |
-        
-          options(repos = c(
-             RSPM = 'https://packagemanager.rstudio.com/all',
-             CRAN = 'https://cloud.r-project.org'))
-        
-          Sys.setenv(DOWNLOAD_STATIC_LIBV8 = 1)
-          if (isFALSE(requireNamespace("pkgdepends", quietly = TRUE))) {
-                    install.packages("pkgdepends")
-          }
-          
-          if (isFALSE(requireNamespace("pak", quietly = TRUE))) {
-                    install.packages("pak")
-          }
-          
-          
-          pak::pkg_install(c("V8","jsonvalidate" ,"cffr","jsonlite", "sessioninfo"), upgrade = TRUE)
-          
-          
+          # Install pak
+          install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))
+        shell: Rscript {0}
+
+
+      - name: Install dependencies
+        run: |
+          # Install/Update packages
+          Sys.setenv("PKGCACHE_HTTP_VERSION" = "2")
+          pak::pkg_install(c("cffr", "knitr", "sessioninfo"), upgrade = TRUE, dependencies = TRUE)
+        shell: Rscript {0}
+
+      - name: Session info
+        run: |
+          # Session info
           if (requireNamespace("sessioninfo", quietly = TRUE)) {
             if (packageVersion("sessioninfo") >= "1.2.1") {
               sessioninfo::session_info(pkgs = "installed", include_base = TRUE)
@@ -75,5 +72,4 @@ jobs:
           } else {
             sessionInfo()
           }
-          
         shell: Rscript {0}
