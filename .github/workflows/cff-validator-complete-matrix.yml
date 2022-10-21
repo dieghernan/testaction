@@ -26,40 +26,46 @@ jobs:
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      RSPM: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"
+      #RSPM: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # This is needed for workflows running on
-      # ubuntu-20.04 or later
-      - name: Install V8
-        if: runner.os == 'Linux' && matrix.config.os != 'ubuntu-18.04'
-        run: |
-          sudo apt-get install -y libv8-dev
-
-      # This is needed for workflows running on
-      # previous versions of ubuntu
-      - name: Install V8 on old ubuntu
-        if: runner.os == 'Linux' && matrix.config.os == 'ubuntu-18.04'
-        run: |
-          # Ubuntu Xenial (16.04) and Bionic (18.04) only
-          sudo add-apt-repository ppa:cran/v8
-          sudo apt-get update
-          sudo apt-get install libnode-dev
-
-      - name: Validate CITATION.cff
-        uses: dieghernan/cff-validator@main
-
-      - name: Validate examples/key-complete/CITATION.cff
-        uses: dieghernan/cff-validator@main
+steps:
+      - name: Install R
+        uses: r-lib/actions/setup-r@v2
         with:
-          citation-path: "./examples/key-complete/CITATION.cff"
+          install-r: false
 
-      # Upload artifact
-      - uses: actions/upload-artifact@v2
-        if: failure()
+      - name: Restore R package cache
+        uses: actions/cache@v3
         with:
-          name: citation-cff-errors
-          path: citation_cff_errors.md
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-3-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-3-
+
+      - name: Install packages
+        run: |
+          if (isFALSE(requireNamespace("remotes", quietly = TRUE))) {
+                    install.packages("remotes")
+          }
+          
+          if (isFALSE(requireNamespace("sessioninfo", quietly = TRUE))) {
+                    install.packages("sessioninfo")
+          }
+          remotes::install_cran(c("cffr","jsonlite"), upgrade = "always", quiet = TRUE)
+          
+          
+          if (requireNamespace("sessioninfo", quietly = TRUE)) {
+            if (packageVersion("sessioninfo") >= "1.2.1") {
+              sessioninfo::session_info(pkgs = "installed", include_base = TRUE)
+            } else {
+              options(width = 200)
+              sessioninfo::session_info(rownames(installed.packages()), include_base=TRUE)
+            }
+          } else {
+            sessionInfo()
+          }
+          
+        shell: Rscript {0}
