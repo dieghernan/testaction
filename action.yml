@@ -41,7 +41,7 @@ runs:
         if: runner.os == 'Linux'
         run: |
           # Install dependencies
-          cat("::group::Install/update packages\n")
+          cat("::group::Install/update packages RSPM\n")
           cat("os-version=", sessionInfo()$running, "\n")
           options(repos="https://packagemanager.rstudio.com/all/latest")
           # Install/Update packages

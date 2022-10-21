@@ -31,4 +31,4 @@ jobs:
       - name: Validate CITATION.cff
         uses: dieghernan/testaction@main
         with:
-          cache-version: 999
+          cache-version: 1000
