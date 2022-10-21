@@ -48,6 +48,10 @@ jobs:
       - name: Install packages
         run: |
         
+          options(repos = c(
+             RSPM = 'https://packagemanager.rstudio.com/all',
+             CRAN = 'https://cloud.r-project.org'))
+        
           Sys.setenv(DOWNLOAD_STATIC_LIBV8 = 1)
           if (isFALSE(requireNamespace("pkgdepends", quietly = TRUE))) {
                     install.packages("pkgdepends")
