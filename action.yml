@@ -69,7 +69,6 @@ runs:
       - name: Validate cff
         run: | 
           # Validate cff
-          cat("::group::Results\n")
           citfile <- yaml::read_yaml("${{ inputs.citation-path }}")
           # All elements to character
           citfile <- rapply(citfile, function(x) as.character(x), how = "replace")
@@ -117,6 +116,7 @@ runs:
                                                 verbose = TRUE
           )
           # Results
+          cat("Results\n")
           message("------\n")
           if (result == FALSE){
             print(knitr::kable(attributes(result)$errors, align = "l", caption = paste("${{ inputs.citation-path }}", "errors:")))
@@ -136,5 +136,4 @@ runs:
             message("${{ inputs.citation-path }} is valid.")
             message("\n\n------")
           }
-          cat("::endgroup::\n")
         shell: Rscript {0}
