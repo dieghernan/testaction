@@ -56,7 +56,7 @@ jobs:
           if (isFALSE(requireNamespace("sessioninfo", quietly = TRUE))) {
                     install.packages("sessioninfo")
           }
-          remotes::install_cran(c("cffr","jsonlite"), upgrade = "always", quiet = TRUE)
+          remotes::install_cran(c("V8","jsonvalidate" ,"cffr","jsonlite"), upgrade = "always", quiet = TRUE)
           
           
           if (requireNamespace("sessioninfo", quietly = TRUE)) {
