@@ -32,6 +32,12 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get install -y libv8-dev  
+          
+       - name: Install curl
+        if: runner.os == 'Linux'
+        run: |
+          
+          sudo apt-get install -y libcurl-dev
 
       - name: Install R
         uses: r-lib/actions/setup-r@v2
