@@ -29,6 +29,4 @@ jobs:
         uses: actions/checkout@v2 
           
       - name: Validate CITATION.cff
-        uses: dieghernan/testaction@main
-        with:
-          cache-version: 5634
+        uses: dieghernan/cff-validator@main
